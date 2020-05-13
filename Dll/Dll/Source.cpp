@@ -38,7 +38,7 @@ extern "C" {
         return linear_model_predict_regression(model, inputs, input_dim) >= 0 ? 1 : -1;
     }
 
-    DLLEXPORT double* linear_model_train_classification(
+    DLLEXPORT void linear_model_train_classification(
         double* model,
         double** dataset_inputs,
         int dataset_inputs_size,
@@ -57,6 +57,5 @@ extern "C" {
             for (int i = 0; i < input_dim; i++)
                 model[i + 1] += grad * dataset_inputs[k][i];
         }
-        return model;
     }
 }
