@@ -40,8 +40,8 @@ extern "C" {
 
     DLLEXPORT void linear_model_train_classification(
         double* model,
-        double** dataset_inputs,
-        int dataset_inputs_size,
+        double* dataset_inputs,
+        int dataset_inputs_line_count,
         int input_dim,
         double* dataset_expected_outputs,
         int iterations_count = 100,
@@ -50,12 +50,15 @@ extern "C" {
         srand(time(NULL));
         for (int it = 0; it < iterations_count; it++)
         {
-            int k = rand() % dataset_inputs_size;
-            double g_x_k = linear_model_predict_classification(model, dataset_inputs[k], input_dim);
+            int k = rand() % dataset_inputs_line_count;
+            double* dataset_inputs_k = new double[input_dim];
+            for (int i = 0; i < input_dim; i++)
+                dataset_inputs_k[i] = dataset_inputs[k + i];
+            double g_x_k = linear_model_predict_classification(model, dataset_inputs_k, input_dim);
             double grad = alpha * (dataset_expected_outputs[k] - g_x_k);
             model[0] += grad * 1;
             for (int i = 0; i < input_dim; i++)
-                model[i + 1] += grad * dataset_inputs[k][i];
+                model[i + 1] += grad * dataset_inputs[k+i];
         }
     }
 }
